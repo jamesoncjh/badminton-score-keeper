@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Badminton Court Scorer & Live Visualizer</title>
+  <!-- Google Fonts: Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <!-- CSS Styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <!-- Background glow effects -->
+  <div class="glow-bg glow-bg-1"></div>
+  <div class="glow-bg glow-bg-2"></div>
+
+  <div class="app-container">
+    <!-- Top-right Header Controls -->
+    <div class="header-controls">
+      <button id="theme-toggle" class="icon-btn" title="Toggle Theme">🌓</button>
+      <button id="sound-toggle" class="icon-btn active" title="Mute/Unmute Buzzers">🔊</button>
+    </div>
+
+    <!-- Setup Screen -->
+    <section id="setup-screen" class="glass-panel setup-panel active">
+      <h2 class="section-title">New Match Configuration</h2>
+
+      <div class="setup-grid">
+        <!-- Match Rules -->
+        <div class="setup-card full-width">
+          <h3>Match Details</h3>
+          <div class="match-mode-selector">
+            <button type="button" id="btn-singles" class="mode-btn active">Singles</button>
+            <button type="button" id="btn-doubles" class="mode-btn">Doubles</button>
+          </div>
+
+          <div class="config-row">
+            <div class="config-group">
+              <label for="select-sets">Match Format</label>
+              <select id="select-sets">
+                <option value="1">Best of 1 Game</option>
+                <option value="3" selected>Best of 3 Games</option>
+                <option value="5">Best of 5 Games</option>
+              </select>
+            </div>
+
+            <div class="config-group">
+              <label for="input-target-points">Points to Win</label>
+              <input type="number" id="input-target-points" value="21" min="11" max="31">
+            </div>
+
+            <div class="config-group">
+              <label for="input-max-points">Max Points (Cap)</label>
+              <input type="number" id="input-max-points" value="30" min="21" max="40">
+            </div>
+          </div>
+        </div>
+
+        <!-- Team A (Left Side) -->
+        <div class="setup-card team-setup" id="setup-team-a">
+          <h3>Team A (Left Side)</h3>
+          <div class="input-group">
+            <label for="team-a-name">Club / Country / Team</label>
+            <input type="text" id="team-a-name" placeholder="e.g., Malaysia (MAS)">
+          </div>
+
+          <div class="input-group">
+            <label for="player-a1-name">Player 1 Name</label>
+            <input type="text" id="player-a1-name" placeholder="Player 1">
+          </div>
+
+          <div class="input-group doubles-only hidden">
+            <label for="player-a2-name">Player 2 Name</label>
+            <input type="text" id="player-a2-name" placeholder="Player 2">
+          </div>
+
+          <div class="color-picker-group">
+            <label>Jersey Color</label>
+            <div class="color-options" id="colors-team-a">
+              <span class="color-dot active" data-color="#3b82f6" style="background-color: #3b82f6;"></span>
+              <span class="color-dot" data-color="#06b6d4" style="background-color: #06b6d4;"></span>
+              <span class="color-dot" data-color="#10b981" style="background-color: #10b981;"></span>
+              <span class="color-dot" data-color="#f59e0b" style="background-color: #f59e0b;"></span>
+              <span class="color-dot" data-color="#ec4899" style="background-color: #ec4899;"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Team B (Right Side) -->
+        <div class="setup-card team-setup" id="setup-team-b">
+          <h3>Team B (Right Side)</h3>
+          <div class="input-group">
+            <label for="team-b-name">Club / Country / Team</label>
+            <input type="text" id="team-b-name" placeholder="e.g., Denmark (DEN)">
+          </div>
+
+          <div class="input-group">
+            <label for="player-b1-name">Player 1 Name</label>
+            <input type="text" id="player-b1-name" placeholder="Player 1">
+          </div>
+
+          <div class="input-group doubles-only hidden">
+            <label for="player-b2-name">Player 2 Name</label>
+            <input type="text" id="player-b2-name" placeholder="Player 2">
+          </div>
+
+          <div class="color-picker-group">
+            <label>Jersey Color</label>
+            <div class="color-options" id="colors-team-b">
+              <span class="color-dot" data-color="#3b82f6" style="background-color: #3b82f6;"></span>
+              <span class="color-dot" data-color="#06b6d4" style="background-color: #06b6d4;"></span>
+              <span class="color-dot" data-color="#10b981" style="background-color: #10b981;"></span>
+              <span class="color-dot" data-color="#f59e0b" style="background-color: #f59e0b;"></span>
+              <span class="color-dot active" data-color="#ef4444" style="background-color: #ef4444;"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Starting Conditions -->
+        <div class="setup-card full-width">
+          <h3>First Service Details</h3>
+          <div class="config-row">
+            <div class="config-group">
+              <label for="select-first-server-team">Serving Team First</label>
+              <select id="select-first-server-team">
+                <option value="A" selected>Team A (Left)</option>
+                <option value="B">Team B (Right)</option>
+              </select>
+            </div>
+
+            <div class="config-group doubles-only hidden">
+              <label for="select-first-server">First Server</label>
+              <select id="select-first-server">
+                <option value="A1">Player 1 (Team A)</option>
+                <option value="A2">Player 2 (Team A)</option>
+              </select>
+            </div>
+
+            <div class="config-group doubles-only hidden">
+              <label for="select-first-receiver">First Receiver</label>
+              <select id="select-first-receiver">
+                <option value="B1">Player 1 (Team B)</option>
+                <option value="B2">Player 2 (Team B)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="setup-actions">
+        <button type="button" id="btn-start-match" class="primary-btn">Start Match 🏸</button>
+      </div>
+    </section>
+
+    <!-- Match Screen -->
+    <section id="match-screen" class="match-layout">
+      <!-- Main Arena (Court + Scoreboard) -->
+      <div class="main-arena">
+        <!-- Scoreboard -->
+        <div class="scoreboard glass-panel">
+          <div class="score-team team-left">
+            <div class="team-meta">
+              <span id="team-a-flag" class="flag-color"></span>
+              <h2 id="scoreboard-team-a-name" class="team-name-display">Team A</h2>
+            </div>
+            <div id="score-display-a" class="score-digit">00</div>
+            <div class="set-wins" id="sets-a-dots">
+              <span class="set-dot"></span>
+              <span class="set-dot"></span>
+              <span class="set-dot"></span>
+            </div>
+          </div>
+
+          <div class="scoreboard-middle">
+            <div id="match-status-label" class="match-status">Game 1</div>
+            <div class="timer-display">
+              <span id="match-timer">00:00</span>
+              <span id="rally-timer" class="sub-timer" title="Rally Timer">⏱️ 0s</span>
+            </div>
+            <div id="shuttle-display" class="shuttle-counter" title="Shuttles Used">
+              <span>Shuttles:</span>
+              <strong id="shuttle-count-val">1</strong>
+            </div>
+          </div>
+
+          <div class="score-team team-right">
+            <div class="team-meta">
+              <h2 id="scoreboard-team-b-name" class="team-name-display">Team B</h2>
+              <span id="team-b-flag" class="flag-color"></span>
+            </div>
+            <div id="score-display-b" class="score-digit">00</div>
+            <div class="set-wins" id="sets-b-dots">
+              <span class="set-dot"></span>
+              <span class="set-dot"></span>
+              <span class="set-dot"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Court Container -->
+        <div class="court-container glass-panel">
+          <div class="court-header">
+            <span class="court-direction-indicator">⬅️ Left End</span>
+            <button id="btn-swap-ends" class="secondary-btn btn-sm">Swap Court Sides 🔄</button>
+            <span class="court-direction-indicator">Right End ➡️</span>
+          </div>
+
+          <!-- Dynamic SVG Court Visualizer -->
+          <div class="court-wrapper">
+            <svg id="badminton-court" viewBox="0 0 1000 600" width="100%" height="100%">
+              <!-- Court Floor Background -->
+              <rect class="court-floor" x="50" y="50" width="900" height="500" rx="10" />
+
+              <!-- Boundary Lines -->
+              <!-- Doubles Outer boundary -->
+              <rect class="court-border" x="80" y="80" width="840" height="440" />
+
+              <!-- Singles Inner boundary side lines -->
+              <line class="court-line" x1="80" y1="110" x2="920" y2="110" />
+              <line class="court-line" x1="80" y1="490" x2="920" y2="490" />
+
+              <!-- Center Line -->
+              <line class="court-line" x1="80" y1="300" x2="920" y2="300" />
+
+              <!-- Short Service Lines -->
+              <line class="court-line" x1="320" y1="80" x2="320" y2="520" />
+              <line class="court-line" x1="680" y1="80" x2="680" y2="520" />
+
+              <!-- Doubles Service Back Lines (Inner back lines) -->
+              <line class="court-line doubles-line" x1="140" y1="80" x2="140" y2="520" />
+              <line class="court-line doubles-line" x1="860" y1="80" x2="860" y2="520" />
+
+              <!-- The Net Line (Middle of court) -->
+              <line class="court-net-line" x1="500" y1="60" x2="500" y2="540" />
+
+              <!-- Net Posts -->
+              <circle class="net-post" cx="500" cy="70" r="6" />
+              <circle class="net-post" cx="500" cy="530" r="6" />
+              <line class="net-mesh" x1="500" y1="70" x2="500" y2="530" stroke-dasharray="2,3" />
+
+              <!-- Interactive/Dynamic elements will be drawn by JS:
+                   - Service indicator arrow
+                   - Players avatars (Team A and Team B)
+                   - Highlight overlays for active service/receive boxes -->
+              <g id="service-arrow-group"></g>
+              <g id="court-highlights"></g>
+              <g id="players-group"></g>
+            </svg>
+          </div>
+
+          <div class="court-footer">
+            <div class="court-legend">
+              <span class="legend-item"><span class="legend-badge server-badge">S</span> Server</span>
+              <span class="legend-item"><span class="legend-badge receiver-badge">R</span> Receiver</span>
+              <span class="legend-item"><span class="legend-badge icon">🏸</span> Shuttle Direction</span>
+            </div>
+            <div class="court-actions">
+              <button id="btn-correct-positions" class="secondary-btn btn-sm"
+                title="Manually swap positions on a side if players got mixed up">Manual Swap Positions
+                🧑‍🤝‍🧑</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Controls Console -->
+        <div class="controls-console glass-panel">
+          <div class="score-buttons">
+            <button id="btn-score-a" class="score-btn team-a-btn">Point Team A (+1)</button>
+            <button id="btn-score-b" class="score-btn team-b-btn">Point Team B (+1)</button>
+          </div>
+
+          <div class="console-actions">
+            <button id="btn-undo" class="action-btn" title="Undo Last Point">↩️ Undo</button>
+            <button id="btn-redo" class="action-btn" title="Redo Point" disabled>↪️ Redo</button>
+            <button id="btn-new-shuttle" class="action-btn" title="Call for a new shuttle">+1 Shuttle 🏸</button>
+            <button id="btn-pause-match" class="action-btn" title="Pause match & timers">⏸️ Pause</button>
+            <button id="btn-reset-match" class="action-btn danger-btn" title="Reset match and start over">🔄
+              Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar (Stats & Event Log) -->
+      <aside class="sidebar glass-panel">
+        <div class="tabs-header">
+          <button id="tab-btn-log" class="tab-btn active">Match Log</button>
+          <button id="tab-btn-stats" class="tab-btn">Live Stats</button>
+        </div>
+
+        <!-- Tab: Log -->
+        <div id="tab-content-log" class="tab-content active">
+          <div class="log-container" id="match-log">
+            <div class="log-entry system">Match configured. Ready to start!</div>
+          </div>
+        </div>
+
+        <!-- Tab: Stats -->
+        <div id="tab-content-stats" class="tab-content">
+          <div class="stats-container">
+            <div class="stat-card">
+              <h4>Total Match Time</h4>
+              <div class="stat-value" id="stat-total-time">00:00</div>
+            </div>
+            <div class="stat-card">
+              <h4>Average Rally Time</h4>
+              <div class="stat-value" id="stat-avg-rally">0.0s</div>
+            </div>
+            <div class="stat-card">
+              <h4>Shuttles Used</h4>
+              <div class="stat-value" id="stat-shuttles">1</div>
+            </div>
+
+            <div class="stats-comparison">
+              <h3>Rally Performance</h3>
+              <div class="comp-row">
+                <div class="comp-label">Max Consecutive Points</div>
+                <div class="comp-values">
+                  <span id="stat-consecutive-a" class="val-a">0</span>
+                  <span class="divider">:</span>
+                  <span id="stat-consecutive-b" class="val-b">0</span>
+                </div>
+              </div>
+              <div class="comp-row">
+                <div class="comp-label">Service Points Won</div>
+                <div class="comp-values">
+                  <span id="stat-service-won-a" class="val-a">0</span>
+                  <span class="divider">:</span>
+                  <span id="stat-service-won-b" class="val-b">0</span>
+                </div>
+              </div>
+              <div class="comp-row">
+                <div class="comp-label">Receiving Points Won</div>
+                <div class="comp-values">
+                  <span id="stat-receive-won-a" class="val-a">0</span>
+                  <span class="divider">:</span>
+                  <span id="stat-receive-won-b" class="val-b">0</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="chart-box">
+              <h3>Score Progress</h3>
+              <div class="chart-placeholder" id="score-chart-container">
+                <!-- We can draw a tiny responsive score-over-time SVG line chart here! -->
+                <svg id="score-chart" width="100%" height="120" viewBox="0 0 200 100" preserveAspectRatio="none">
+                  <path id="chart-path-a" d="" stroke="#3b82f6" stroke-width="2" fill="none" />
+                  <path id="chart-path-b" d="" stroke="#ef4444" stroke-width="2" fill="none" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- Interval Overlay -->
+    <div id="interval-overlay" class="overlay-container hidden">
+      <div class="interval-card glass-panel animate-scale">
+        <div class="interval-icon">⏳</div>
+        <h2 id="interval-title">Interval</h2>
+        <p id="interval-subtitle">Take a break. Resuming shortly.</p>
+        <div class="interval-timer-large" id="interval-timer-val">60</div>
+
+        <div class="interval-controls">
+          <button id="btn-interval-skip" class="primary-btn">Skip Interval ➡️</button>
+          <button id="btn-interval-add" class="secondary-btn">+30 Seconds ➕</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Match End / Winner Modal -->
+    <div id="winner-overlay" class="overlay-container hidden">
+      <div class="winner-card glass-panel animate-bounce">
+        <div class="winner-trophy">🏆</div>
+        <h2>Match Completed!</h2>
+        <div class="winner-announcement">
+          <span id="winner-team-name">Team Name</span>
+          <p>Wins the Match!</p>
+        </div>
+        <div class="winner-score-summary" id="winner-score-summary">
+          <!-- e.g., 21-18, 15-21, 21-19 -->
+        </div>
+        <div class="winner-actions">
+          <button id="btn-winner-restart" class="primary-btn">New Match 🔄</button>
+          <button id="btn-winner-close" class="secondary-btn">View Stats 📊</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Manual Positions Correction Modal -->
+    <div id="correction-modal" class="overlay-container hidden">
+      <div class="correction-card glass-panel">
+        <h3>Manual Swap Positions</h3>
+        <p>If players have physically changed service courts and the scoring tracker is out of sync, use these buttons
+          to swap them.</p>
+
+        <div class="correction-choices">
+          <div class="correction-side">
+            <h4>Team A (Left Side)</h4>
+            <button id="btn-correct-a" class="secondary-btn btn-sm">Swap Player 1 & 2 🔄</button>
+          </div>
+          <div class="correction-side">
+            <h4>Team B (Right Side)</h4>
+            <button id="btn-correct-b" class="secondary-btn btn-sm">Swap Player 1 & 2 🔄</button>
+          </div>
+        </div>
+
+        <div class="correction-actions">
+          <button id="btn-close-correction" class="primary-btn btn-sm">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio Context Activator Banner (Temporary alert for sound autoplay policies) -->
+  <div id="audio-activator-banner" class="audio-banner hidden">
+    <span>🔊 Audio is muted until you interact with the page. Click here to enable sound.</span>
+  </div>
+
+  <!-- JavaScript Module -->
+  <script src="app.js"></script>
+</body>
+
+</html>
