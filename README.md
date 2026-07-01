@@ -1,6 +1,6 @@
-# 🏸 CourtMaster Pro: Badminton Scorer & Visualizer
+# Badminton Court Scorer & Live Visualizer
 
-CourtMaster Pro is a premium, single-page web application designed for badminton referees, players, and clubs to track rally-point matches, visualize player positioning, and monitor statistics in real-time.
+Single-page web application designed for badminton referees, players, and clubs to track rally-point matches, visualize player positioning, and monitor statistics in real-time.
 
 It features a responsive visualizer of a badminton court, automatic doubles service tracking, match and rally timers, interval warnings with buzzer sounds, and live statistics charts.
 
